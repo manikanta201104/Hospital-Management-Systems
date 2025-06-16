@@ -8,10 +8,10 @@ export default function Home() {
     <div>
       <main>
         <>
-        <Homepage />
-        <HeroSection />
-        <ReviewForm />
-        <Footer />
+          <Homepage />
+          <HeroSection />
+          <ReviewForm />
+          <Footer />
         </>
       </main>
     </div>

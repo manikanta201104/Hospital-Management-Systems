@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
       // Fetch user details from API
       const fetchUserDetails = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/v1/me', {
+          const response = await fetch('http://localhost:5000/auth/me', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -76,9 +76,22 @@ const Navbar: React.FC = () => {
       isMedicalDropdownOpen ||
       isResearchDropdownOpen ||
       isGivingDropdownOpen ||
-      isMobileMenuOpen
+      isMobileMenuOpen ||
+      isProfileDropdownOpen
         ? 'hidden'
         : 'auto';
+
+    // Handle window resize to reset mobile menu on desktop
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) { // Tailwind's lg breakpoint
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call on mount to ensure correct initial state
+
+    return () => window.removeEventListener('resize', handleResize);
   }, [
     isCareDropdownOpen,
     isHealthDropdownOpen,
@@ -86,11 +99,12 @@ const Navbar: React.FC = () => {
     isResearchDropdownOpen,
     isGivingDropdownOpen,
     isMobileMenuOpen,
+    isProfileDropdownOpen,
   ]);
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/logout', {
+      const response = await fetch('http://localhost:5000/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,8 +167,8 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Center: Navigation Links (Desktop) */}
-      <div className="hidden md:flex items-center justify-center flex-1">
-        <div className="flex items-center gap-4 lg:gap-6">
+      <div className="hidden lg:flex items-center justify-center flex-1">
+        <div className="flex items-center gap-4 xl:gap-6">
           {/* Care Dropdown */}
           <div className="relative group">
             <button
@@ -164,14 +178,15 @@ const Navbar: React.FC = () => {
                 setIsMedicalDropdownOpen(false);
                 setIsResearchDropdownOpen(false);
                 setIsGivingDropdownOpen(false);
+                setIsProfileDropdownOpen(false);
               }}
-              className="flex items-center space-x-1 text-xs lg:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+              className="flex items-center space-x-1 text-xs xl:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
             >
               <span>Care at Minimalistic Clinic</span>
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isCareDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isCareDropdownOpen && (
-              <div className="fixed left-0 top-[52px] md:top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
+              <div className="fixed left-0 top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
                 <div className="max-w-7xl mx-auto py-6 px-6 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col space-y-3">
                     <span className="text-base font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
@@ -181,7 +196,7 @@ const Navbar: React.FC = () => {
                       ['Request Appointment', '/request-appointment'],
                       ['Find a Doctor', '/find-a-doctor'],
                       ['Locations', '/locations'],
-                      ['Patient & Visitor Guide', '/pat-vis'],
+                      ['Patient & Visitor Guide', '/patient-visitor'],
                       ['Contact Us', '/contact'],
                     ].map(([text, href]) => (
                       <Link
@@ -210,21 +225,22 @@ const Navbar: React.FC = () => {
                 setIsMedicalDropdownOpen(false);
                 setIsResearchDropdownOpen(false);
                 setIsGivingDropdownOpen(false);
+                setIsProfileDropdownOpen(false);
               }}
-              className="flex items-center space-x-1 text-xs lg:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+              className="flex items-center space-x-1 text-xs xl:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
             >
               <span>Health Library</span>
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isHealthDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isHealthDropdownOpen && (
-              <div className="fixed left-0 top-[52px] md:top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
+              <div className="fixed left-0 top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
                 <div className="max-w-7xl mx-auto py-6 px-6 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col space-y-3">
                     <span className="text-base font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                       Health Resources
                     </span>
                     {[
-                      ['Diseases & Conditions', '/cond-dis'],
+                      ['Diseases & Conditions', '/conditions-diseases'],
                       ['Symptoms', '/symptoms'],
                       ['Tests & Procedures', '/test-pro'],
                     ].map(([text, href]) => (
@@ -254,14 +270,15 @@ const Navbar: React.FC = () => {
                 setIsHealthDropdownOpen(false);
                 setIsResearchDropdownOpen(false);
                 setIsGivingDropdownOpen(false);
+                setIsProfileDropdownOpen(false);
               }}
-              className="flex items-center space-x-1 text-xs lg:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+              className="flex items-center space-x-1 text-xs xl:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
             >
               <span>For Medical Professionals</span>
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isMedicalDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isMedicalDropdownOpen && (
-              <div className="fixed left-0 top-[52px] md:top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
+              <div className="fixed left-0 top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
                 <div className="max-w-7xl mx-auto py-6 px-6 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col space-y-3">
                     <span className="text-base font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
@@ -321,14 +338,15 @@ const Navbar: React.FC = () => {
                 setIsHealthDropdownOpen(false);
                 setIsMedicalDropdownOpen(false);
                 setIsGivingDropdownOpen(false);
+                setIsProfileDropdownOpen(false);
               }}
-              className="flex items-center space-x-1 text-xs lg:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+              className="flex items-center space-x-1 text-xs xl:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
             >
               <span>Research & Education</span>
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isResearchDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isResearchDropdownOpen && (
-              <div className="fixed left-0 top-[52px] md:top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
+              <div className="fixed left-0 top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
                 <div className="max-w-7xl mx-auto py-6 px-6 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col space-y-3">
                     <span className="text-base font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
@@ -396,14 +414,15 @@ const Navbar: React.FC = () => {
                 setIsHealthDropdownOpen(false);
                 setIsMedicalDropdownOpen(false);
                 setIsResearchDropdownOpen(false);
+                setIsProfileDropdownOpen(false);
               }}
-              className="flex items-center space-x-1 text-xs lg:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+              className="flex items-center space-x-1 text-xs xl:text-sm font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
             >
               <span>Giving to Minimalistic Clinic</span>
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isGivingDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isGivingDropdownOpen && (
-              <div className="fixed left-0 top-[52px] md:top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
+              <div className="fixed left-0 top-[60px] bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 w-full animate-slide-down">
                 <div className="max-w-7xl mx-auto py-6 px-6 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="flex flex-col space-y-3">
                     <span className="text-base font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
@@ -434,7 +453,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Right: Login + Profile (Desktop) */}
+      {/* Right: Login + Profile (Desktop and Tablet) */}
       <div className="hidden md:flex items-center gap-3 flex-shrink-0">
         <Link
           href="/reqappointment"
@@ -455,7 +474,7 @@ const Navbar: React.FC = () => {
               <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             {isProfileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-gradient-to-b from-white to-blue-50 bg-opacity-90 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 animate-slide-down">
+              <div className="absolute right-0 mt-2 w-56 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border border-blue-100 rounded-xl z-40 animate-slide-down">
                 <div className="py-4 px-4">
                   <p className="text-xs font-semibold text-gray-900">Username: {username}</p>
                   <p className="text-xs text-gray-600 mt-1">Email: {email}</p>
@@ -472,20 +491,20 @@ const Navbar: React.FC = () => {
         ) : (
           <Link
             href="/login"
-            className="flex items-center space-x-1 text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out whitespace-nowrap"
+            className="flex items-center space-x-1 text-xs font-semibold text-gray-800 hover:text-blue-600 transition-colors duration-300 ease-in-out whitespace-nowrap"
           >
             <FaUser className="text-xs transition-transform duration-300 ease-in-out" />
             <span>Log in</span>
           </Link>
         )}
-        <Link href="/search" className="text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out">
+        <Link href="/search" className="text-gray-800 hover:text-blue-600 transition-colors duration-300 ease-in-out">
           <FaSearch className="text-xs hover:rotate-90 transition-transform duration-300 ease-in-out" />
         </Link>
       </div>
 
       {/* Mobile Menu Toggle */}
       <div className="md:hidden flex items-center">
-        <button onClick={toggleMobileMenu} className="text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out">
+        <button onClick={toggleMobileMenu} className="text-gray-800 hover:text-blue-600 transition-colors duration-300 ease-in-out">
           {isMobileMenuOpen ? (
             <FaTimes className="text-lg hover:rotate-90 transition-transform duration-300 ease-in-out" />
           ) : (
@@ -496,20 +515,20 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 z-40">
-          <div className="md:hidden fixed top-[52px] right-0 w-4/5 max-w-xs bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border-l border-blue-100 h-full z-50 transform transition-transform duration-500 ease-in-out rounded-l-xl animate-slide-down">
+        <div className="fixed top-[52px] left-0 w-full h-[calc(100vh-52px)] bg-black bg-opacity-60 z-40">
+          <div className="md:hidden fixed top-[52px] right-0 w-full sm:w-3/4 max-w-sm bg-gradient-to-b from-white to-blue-50 bg-opacity-95 backdrop-blur-lg text-gray-800 shadow-2xl border-l border-blue-100 h-[calc(100vh-52px)] z-50 transform transition-transform duration-300 ease-in-out rounded-l-xl overflow-y-auto">
             <div className="flex flex-col py-5 px-5 space-y-4">
               {/* Care Section */}
               <div>
                 <button
                   onClick={() => setIsCareDropdownOpen(!isCareDropdownOpen)}
-                  className="flex items-center justify-between w-full text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                  className="flex items-center justify-between w-full text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300 ease-in-out px-2 py-1 rounded-lg"
                 >
                   <span>Care at Minimalistic Clinic</span>
-                  <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isCareDropdownOpen ? 'rotate-180' : ''}`} />
+                  <FaChevronDown className={`text-sm transition-transform duration-300 ease-in-out ${isCareDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isCareDropdownOpen && (
-                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 animate-slide-down">
+                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 rounded-lg animate-slide-down">
                     {[
                       ['Request Appointment', '/request-appointment'],
                       ['Find a Doctor', '/find-a-doctor'],
@@ -539,15 +558,15 @@ const Navbar: React.FC = () => {
               <div className="border-t border-blue-200 pt-3">
                 <button
                   onClick={() => setIsHealthDropdownOpen(!isHealthDropdownOpen)}
-                  className="flex items-center justify-between w-full text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                  className="flex items-center justify-between w-full text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300 ease-in-out px-2 py-1 rounded-lg"
                 >
                   <span>Health Library</span>
-                  <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isHealthDropdownOpen ? 'rotate-180' : ''}`} />
+                  <FaChevronDown className={`text-sm transition-transform duration-300 ease-in-out ${isHealthDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isHealthDropdownOpen && (
-                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 animate-slide-down">
+                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 rounded-lg animate-slide-down">
                     {[
-                      ['Diseases & Conditions', '/cond-dis'],
+                      ['Diseases & Conditions', '/conditions-diseases'],
                       ['Symptoms', '/symptoms'],
                       ['Tests & Procedures', '/test-pro'],
                     ].map(([text, href]) => (
@@ -573,13 +592,13 @@ const Navbar: React.FC = () => {
               <div className="border-t border-blue-200 pt-3">
                 <button
                   onClick={() => setIsMedicalDropdownOpen(!isMedicalDropdownOpen)}
-                  className="flex items-center justify-between w-full text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                  className="flex items-center justify-between w-full text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300 ease-in-out px-2 py-1 rounded-lg"
                 >
                   <span>For Medical Professionals</span>
-                  <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isMedicalDropdownOpen ? 'rotate-180' : ''}`} />
+                  <FaChevronDown className={`text-sm transition-transform duration-300 ease-in-out ${isMedicalDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isMedicalDropdownOpen && (
-                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 animate-slide-down">
+                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 rounded-lg animate-slide-down">
                     {[
                       ['Medical Professional Resources', '/medical-professional-resources'],
                       ['Refer a Patient', '/refer-patient'],
@@ -612,13 +631,13 @@ const Navbar: React.FC = () => {
               <div className="border-t border-blue-200 pt-3">
                 <button
                   onClick={() => setIsResearchDropdownOpen(!isResearchDropdownOpen)}
-                  className="flex items-center justify-between w-full text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                  className="flex items-center justify-between w-full text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300 ease-in-out px-2 py-1 rounded-lg"
                 >
                   <span>Research & Education</span>
-                  <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isResearchDropdownOpen ? 'rotate-180' : ''}`} />
+                  <FaChevronDown className={`text-sm transition-transform duration-300 ease-in-out ${isResearchDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isResearchDropdownOpen && (
-                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 animate-slide-down">
+                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 rounded-lg animate-slide-down">
                     {[
                       ['Research at Minimalistic Clinic', '/research-at-Minimalistic-clinic'],
                       ['Research Faculty', '/research-faculty'],
@@ -659,13 +678,13 @@ const Navbar: React.FC = () => {
               <div className="border-t border-blue-200 pt-3">
                 <button
                   onClick={() => setIsGivingDropdownOpen(!isGivingDropdownOpen)}
-                  className="flex items-center justify-between w-full text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                  className="flex items-center justify-between w-full text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-300 ease-in-out px-2 py-1 rounded-lg"
                 >
                   <span>Giving to Minimalistic Clinic</span>
-                  <FaChevronDown className={`text-xs transition-transform duration-300 ease-in-out ${isGivingDropdownOpen ? 'rotate-180' : ''}`} />
+                  <FaChevronDown className={`text-sm transition-transform duration-300 ease-in-out ${isGivingDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isGivingDropdownOpen && (
-                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 animate-slide-down">
+                  <div className="flex flex-col space-y-2 mt-2 pl-4 border-l-2 border-blue-200 bg-gradient-to-b from-white to-blue-50 bg-opacity-95 rounded-lg animate-slide-down">
                     {[
                       ['Give Now', '#'],
                       ['Giving to Minimalistic Clinic', '#'],
@@ -694,7 +713,7 @@ const Navbar: React.FC = () => {
               <div className="border-t border-blue-200 pt-4">
                 <Link
                   href="/reqappointment"
-                  className="block py-2 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-all duration-200 ease-in-out"
+                  className="block py-2 text-sm font-semibold text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 ease-in-out px-2 py-1 rounded-lg"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Request Appointment
@@ -705,7 +724,7 @@ const Navbar: React.FC = () => {
                       <div className="w-7 h-7 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-blue-400 shadow-sm">
                         {username.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-xs font-semibold text-gray-800">Hi, {username}</span>
+                      <span className="text-sm font-semibold text-gray-800">Hi, {username}</span>
                     </div>
                     <p className="text-xs text-gray-600">Email: {email}</p>
                     <button
@@ -721,19 +740,19 @@ const Navbar: React.FC = () => {
                 ) : (
                   <Link
                     href="/login"
-                    className="flex items-center space-x-1 py-2 text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-200 ease-in-out"
+                    className="flex items-center space-x-1 py-2 text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 ease-in-out px-2 py-1 rounded-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <FaUser className="text-xs transition-transform duration-300 ease-in-out" />
+                    <FaUser className="text-sm transition-transform duration-300 ease-in-out" />
                     <span>Log in</span>
                   </Link>
                 )}
                 <Link
                   href="/search"
-                  className="flex items-center space-x-1 py-2 text-xs font-semibold text-gray-800 hover:text-blue-600 transition-all duration-200 ease-in-out"
+                  className="flex items-center space-x-1 py-2 text-sm font-semibold text-gray-800 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 ease-in-out px-2 py-1 rounded-lg"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <FaSearch className="text-xs hover:rotate-90 transition-transform duration-300 ease-in-out" />
+                  <FaSearch className="text-sm hover:rotate-90 transition-transform duration-300 ease-in-out" />
                   <span>Search</span>
                 </Link>
               </div>

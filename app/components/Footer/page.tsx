@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
               {/* Top Buttons */}
               <div className="flex flex-col gap-4">
                 {[
-                  { href: "/find-a-doc", text: "Find a doctor", icon: "🩺" },
+                  { href: "/find-a-doctor", text: "Find a doctor", icon: "🩺" },
                   { href: "/explore-careers", text: "Explore careers", icon: "💼" },
                   { href: "/e-news", text: "Sign up for free e-newsletters", icon: "📰" },
                 ].map((button, idx) => (

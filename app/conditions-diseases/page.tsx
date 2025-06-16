@@ -98,73 +98,73 @@ const ConditionDirectoryPage = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-grow px-4 md:px-20 lg:px-32 py-16">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10">
+      <main className="flex-grow px-4 sm:px-8 md:px-12 lg:px-24 xl:px-32 py-8 sm:py-12 md:py-16">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 lg:gap-10">
           {/* Left Side: Diseases & Conditions */}
-          <div className="col-span-12 md:col-span-8">
+          <div className="col-span-1 md:col-span-8">
             {/* Heading */}
             <h1
-              className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 animate-fade-in tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900 animate-fade-in tracking-tight"
               style={{ fontFamily: '"mayo-display", Georgia, serif' }}
             >
               Diseases & Conditions
             </h1>
-            <div className="h-1 w-48 bg-gradient-to-r from-blue-600 to-blue-900 rounded-full mb-8 animate-slide-in"></div>
+            <div className="h-1 w-32 sm:w-40 md:w-48 bg-gradient-to-r from-blue-600 to-blue-900 rounded-full mb-6 md:mb-8 animate-slide-in"></div>
             <p
-              className="text-lg md:text-xl text-gray-700 mb-10 animate-fade-in leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-gray-700 mb-8 md:mb-10 animate-fade-in leading-relaxed"
               style={{ fontFamily: '"mayo-sans", Times, sans-serif' }}
             >
               Explore comprehensive, easy-to-understand information about diseases and conditions.
             </p>
 
             {/* Search Bar */}
-            <div className="mb-12">
+            <div className="mb-8 md:mb-12">
               <label
                 htmlFor="search"
-                className="block text-base font-medium text-gray-800 mb-3"
+                className="block text-sm sm:text-base font-medium text-gray-800 mb-2 sm:mb-3"
                 style={{ fontFamily: '"mayo-sans", Times, sans-serif' }}
               >
                 Search diseases & conditions
               </label>
-              <div className="relative max-w-2xl">
+              <div className="relative w-full max-w-xl">
                 <input
                   id="search"
                   type="text"
                   placeholder="Search for a condition..."
-                  className="w-full px-6 py-4 pl-14 bg-white text-gray-900 rounded-full text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:shadow-xl transition-all duration-300 ease-in-out placeholder-gray-400"
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 pl-10 sm:pl-12 bg-white text-gray-900 rounded-full text-sm sm:text-base shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:shadow-lg transition-all duration-300 ease-in-out placeholder-gray-400"
                 />
-                <FaSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+                <FaSearch className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-base sm:text-lg" />
               </div>
             </div>
 
             {/* Conditions List */}
             <div
-              className="bg-white rounded-2xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl"
+              className="bg-white rounded-xl sm:rounded-2xl shadow-md sm:shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-lg sm:hover:shadow-2xl"
               style={{ fontFamily: '"mayo-sans", Times, sans-serif' }}
             >
               <h2
-                className="text-2xl md:text-3xl font-semibold mb-6 text-gray-900"
+                className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 text-gray-900"
                 style={{ fontFamily: '"mayo-display", Georgia, serif' }}
               >
                 Conditions starting with "{selectedLetter}"
               </h2>
               {loadingDiseases ? (
-                <p className="text-gray-600 animate-pulse">Loading conditions...</p>
+                <p className="text-gray-600 animate-pulse text-sm sm:text-base">Loading conditions...</p>
               ) : error ? (
-                <p className="text-red-600 font-medium">{error}</p>
+                <p className="text-red-600 font-medium text-sm sm:text-base">{error}</p>
               ) : diseases.length === 0 ? (
-                <p className="text-gray-600">No conditions found for letter "{selectedLetter}".</p>
+                <p className="text-gray-600 text-sm sm:text-base">No conditions found for letter "{selectedLetter}".</p>
               ) : (
-                <ul className="space-y-4">
+                <ul className="space-y-3 sm:space-y-4">
                   {diseases.map((disease) => (
                     <li
                       key={disease._id}
-                      className="text-gray-800 hover:text-blue-700 hover:underline transition-all duration-200 text-lg"
+                      className="text-gray-800 hover:text-blue-700 hover:underline transition-all duration-200 text-sm sm:text-base md:text-lg"
                     >
                       <a href={`/conditions/${disease.name.toLowerCase().replace(/\s+/g, '-')}`}>
                         {disease.name}
                         {disease.see && (
-                          <span className="text-gray-500 text-sm"> — See {disease.see}</span>
+                          <span className="text-gray-500 text-xs sm:text-sm"> — See {disease.see}</span>
                         )}
                       </a>
                     </li>
@@ -175,24 +175,24 @@ const ConditionDirectoryPage = () => {
           </div>
 
           {/* Right Side: Alphabet Selector */}
-          <div className="col-span-12 md:col-span-4">
+          <div className="col-span-1 md:col-span-4">
             <h2
-              className="text-xl md:text-2xl font-semibold mb-6 text-gray-900"
+              className="text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6 text-gray-900"
               style={{ fontFamily: '"mayo-display", Georgia, serif' }}
             >
               Find by First Letter
             </h2>
             {loadingAlphabets ? (
-              <p className="text-gray-600 animate-pulse">Loading alphabets...</p>
+              <p className="text-gray-600 animate-pulse text-sm sm:text-base">Loading alphabets...</p>
             ) : error ? (
-              <p className="text-red-600 font-medium">{error}</p>
+              <p className="text-red-600 font-medium text-sm sm:text-base">{error}</p>
             ) : (
-              <div className="grid grid-cols-7 gap-3 md:gap-4">
+              <div className="grid grid-cols-6 sm:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
                 {alphabets.map((letter) => (
                   <button
                     key={letter}
                     onClick={() => setSelectedLetter(letter)}
-                    className={`rounded-full w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-base md:text-lg font-semibold transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl ${
+                    className={`rounded-full w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center text-sm sm:text-base md:text-lg font-semibold transition-all duration-300 ease-in-out shadow-md hover:shadow-lg ${
                       selectedLetter === letter
                         ? 'bg-blue-600 text-white scale-110'
                         : 'bg-white text-gray-900 hover:bg-blue-500 hover:text-white hover:scale-105'
